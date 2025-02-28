@@ -94,12 +94,51 @@ function checkCollision() {
     }
 }
 
-// Event listener for player movement (Now Supports Left and Right Movement!)
+// Event listener for keyboard movement
 window.addEventListener("keydown", (event) => {
     if (event.key === "ArrowUp" && player.y > 0) player.y -= 10;
     if (event.key === "ArrowDown" && player.y < app.screen.height - 20) player.y += 10;
-    if (event.key === "ArrowLeft" && player.x > 0) player.x -= 10; // Move left
-    if (event.key === "ArrowRight" && player.x < app.screen.width - 20) player.x += 10; // Move right
+    if (event.key === "ArrowLeft" && player.x > 0) player.x -= 10;
+    if (event.key === "ArrowRight" && player.x < app.screen.width - 20) player.x += 10;
+});
+
+// ✅ TOUCH SCREEN CONTROLS
+let touchStartX = 0;
+let touchStartY = 0;
+
+// Detect touch start position
+window.addEventListener("touchstart", (event) => {
+    touchStartX = event.touches[0].clientX;
+    touchStartY = event.touches[0].clientY;
+});
+
+// Detect swipe direction to move player
+window.addEventListener("touchmove", (event) => {
+    let touchEndX = event.touches[0].clientX;
+    let touchEndY = event.touches[0].clientY;
+
+    let dx = touchEndX - touchStartX;
+    let dy = touchEndY - touchStartY;
+
+    if (Math.abs(dx) > Math.abs(dy)) {
+        // Horizontal Swipe
+        if (dx > 0 && player.x < app.screen.width - 20) {
+            player.x += 10; // Move right
+        } else if (dx < 0 && player.x > 0) {
+            player.x -= 10; // Move left
+        }
+    } else {
+        // Vertical Swipe
+        if (dy > 0 && player.y < app.screen.height - 20) {
+            player.y += 10; // Move down
+        } else if (dy < 0 && player.y > 0) {
+            player.y -= 10; // Move up
+        }
+    }
+
+    // Update starting point
+    touchStartX = touchEndX;
+    touchStartY = touchEndY;
 });
 
 // Game loop
